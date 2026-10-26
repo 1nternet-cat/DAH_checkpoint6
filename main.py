@@ -51,13 +51,22 @@ mass_3_seg = mass_array[(mass_array >= 10.25) & (mass_array <= 11)]
 Upsilon_3=st.mode(mass_3_seg)
 print(Upsilon_3)
 
+def BintoMass(peaks, range=[9,11], bins=125):
+    masses = np.linspace(range[0], range[1], bins)
+    return np.array([masses[peak] for peak in peaks])
+
+
 def findPeaks(x):
     hist = np.histogram(x, bins=125, range = [9,11])
     peaks = find_peaks(hist[0], distance=5, width=3)
     print(f"peaks: {peaks}")
-    plt.plot(hist[0])
-    plt.vlines(peaks[0], ymin=[0], ymax=[6000], colors=["red"], label="peaks")
+    # convert peaks from histogram to energies
+    peaks_M = BintoMass(peaks[0])
 
+    plt.hist(x, bins=125, range=[9, 11])
+    plt.vlines(peaks_M, ymin=[0], ymax=[6000], colors=["red"], label=f"peaks: {peaks_M}")
+
+    plt.legend()
     plt.xlabel(r"Mass $\frac{Gev}{c^2}$")
     plt.ylabel("Frequency")
     plt.title("Invariant masses of muon pairs")
